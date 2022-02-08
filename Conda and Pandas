@@ -1,9 +1,9 @@
-FROM debian:bullseye-slim
+FROM debian:stretch-slim
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH /opt/conda/bin:$PATH
 
-# Credits continuumio
+# from continuumio
 RUN set -x && \
     apt-get update --fix-missing && \
     apt-get install -y --no-install-recommends \
@@ -49,15 +49,20 @@ RUN set -x && \
     /opt/conda/bin/conda clean -afy && \
     mkdir /swapzone
 
-#From May2021
+# from May2021
+RUN apt-get update
+RUN apt-get install -y golang-go
 RUN apt-get install -y openssh-server
-EXPOSE 22
+RUN apt-get install -y mongodb-server mongo-tools
+RUN apt-get install -y redis-server redis-tools
+
+RUN service ssh start
+EXPOSE 22 6379 27017
 
 #From Stackoverflow
-RUN useradd -rm -d /home/debian -s /bin/bash -g root -G sudo -u 1001 debian
-USER debian
-WORKDIR /home/debian
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN echo 'debian:debian' | chpasswd
+# after config is ok
+#RUN useradd -rm -d /home/malcolm -s /bin/bash -g root -G sudo -u 1001 malcolm 
+#USER malcolm
+#WORKDIR /home/malcolm
 
 CMD [ "/bin/bash" ]
