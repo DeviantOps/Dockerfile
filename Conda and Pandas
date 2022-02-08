@@ -78,10 +78,10 @@ RUN npm install express
 # Bioconda and Pangolin
 RUN git clone https://github.com/cov-lineages/pangolin
 RUN /opt/conda/bin/conda init bash 
+ENV PATH /opt/conda/envs/pangolin/bin:$PATH
 COPY ./pangolin.sh .
 RUN ["chmod", "+x", "./pangolin.sh"]
-#Quick and Dirty way - but works - 2change
-RUN ["bash","-i","./pangolin.sh"]
+RUN ./pangolin.sh
 #
 # Interact remotely with da Box
 # 2do: Start deamons with shell script RUN service ssh start
