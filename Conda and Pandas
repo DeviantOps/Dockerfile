@@ -99,6 +99,10 @@ WORKDIR /opt2/repos
 RUN ["chmod","+x","./repos.sh"]
 RUN ./repos.sh
 WORKDIR /opt2
+# Jupyter
+COPY ./jupyter.sh .
+RUN ["chmod","+x","./jupyter.sh"]
+RUN ./jupyter.sh
 
 # Autostart
 # Interact remotely with da Box
