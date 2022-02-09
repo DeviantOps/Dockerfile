@@ -62,8 +62,10 @@ RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
 # Maths
 RUN apt-get install -y maxima maxima-test
 RUN apt-get install -y octave
+RUN /opt/conda/bin/conda create --name gt -c conda-forge graph-tool 
 # Net and DBs
-RUN apt-get install -y openssh-server
+#RUN apt-get install -y openssh-server
+RUN apt-get install -y ssh
 RUN apt-get install -y mongodb-server mongo-tools
 RUN apt-get install -y redis-server redis-tools
 # Node
@@ -76,22 +78,41 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x  | bash -
 RUN apt-get -y install nodejs
 RUN npm install express
 # Bioconda and Pangolin
-RUN git clone https://github.com/cov-lineages/pangolin
-RUN /opt/conda/bin/conda init bash 
-ENV PATH /opt/conda/envs/pangolin/bin:$PATH
-COPY ./pangolin.sh .
-RUN ["chmod", "+x", "./pangolin.sh"]
-RUN ./pangolin.sh
+# OK RUN git clone https://github.com/cov-lineages/pangolin
+# OK RUN /opt/conda/bin/conda init bash 
+# OK ENV PATH /opt/conda/envs/pangolin/bin:$PATH
+# OK COPY ./pangolin.sh .
+# OK RUN ["chmod", "+x", "./pangolin.sh"]
+# OK RUN ./pangolin.sh
 #
+RUN apt-get -y install sudo vim openvpn unzip unrar-free
+EXPOSE 22 3000 6379 8080 8888 27017
+# Lisp
+COPY ./lisp.sh .
+RUN ["chmod","+x","./lisp.sh"]
+RUN ./lisp.sh
+#
+# Cloning some repos
+RUN mkdir repos
+COPY ./repos.sh repos/.
+WORKDIR /opt2/repos
+RUN ["chmod","+x","./repos.sh"]
+RUN ./repos.sh
+WORKDIR /opt2
+
+# Autostart
 # Interact remotely with da Box
 # 2do: Start deamons with shell script RUN service ssh start
-EXPOSE 22 3000 6379 27017
-
+COPY ./remote.sh .
+RUN ["chmod", "+x", "./remote.sh"]
+#
+CMD ["./remote.sh"]
+#
 # from Stackoverflow
 # after config is ok
 #RUN useradd -rm -d /home/malcolm -s /bin/bash -g root -G sudo -u 1001 malcolm 
 #USER malcolm
 #WORKDIR /home/malcolm
 
-CMD [ "/bin/bash" ]
+#CMD [ "/bin/bash" ]
 #CMD [ "node" ]
