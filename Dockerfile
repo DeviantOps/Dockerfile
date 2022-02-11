@@ -57,6 +57,8 @@ RUN apt-get install -y golang-go julia
 # Maths
 RUN apt-get install -y octave
 RUN /opt/conda/bin/conda create --name gt -c conda-forge graph-tool 
+# Threat Hunting
+RUN /opt/conda/bin/conda create --name th -c conda-forge pycurl certifi
 # Net and DBs
 RUN apt-get install -y ssh
 RUN mkdir /opt2
